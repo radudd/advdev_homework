@@ -13,13 +13,25 @@ CLUSTER=$3
 echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cluster ${CLUSTER}"
 
 # Set up Jenkins with sufficient resources
-# TBD
+oc new-project ${GUID}-jenkins
+sleep 2
+oc new-app jenkins-persistent
 
 # Create custom agent container image with skopeo
-# TBD
+export JENKINS_AGENT=jenkins-agent-appdev
+mkdir ${JENKINS_AGENT} && cd ${JENKINS_AGENT}
+oc new-build --name=${JENKINS_AGENT} --binary=true
+
+cat <<EOF > Dockefile
+FROM docker.io/openshift/jenkins-agent-maven-35-centos7:v3.11
+USER root
+RUN yum -y install skopeo && yum clean all
+USER 1001
+EOF
+oc start-build ${JENKINS_AGENT} --from-directory=.
 
 # Create pipeline build config pointing to the ${REPO} with contextDir `openshift-tasks`
-# TBD
+oc new-build --name=jenkins-pipeline --context-dir=openshift-tasks --strategy=pipeline --env=GUID=${GUID} --env=REPO=${REPO} --env=CLUSTER=${CLUSTER}
 
 # Make sure that Jenkins is fully up and running before proceeding!
 while : ; do
@@ -32,3 +44,26 @@ while : ; do
   echo "...no. Sleeping 10 seconds."
   sleep 10
 done
+
+## My stuff
+#export GUID=f355
+#export APP=app
+#
+## Create new project to host Jenkins
+#oc new-project ${GUID}-jenkins
+#
+## Deploy Jenkins master persistent
+#oc new-app jenkins-persistent
+#
+## Create custom agent for Jenkins
+#export JENKINS_AGENT=jenkins-agent-appdev
+#mkdir ${JENKINS_AGENT} && cd ${JENKINS_AGENT}
+#oc new-build --name=${JENKINS_AGENT} --binary=true
+#
+#cat <<EOF > Dockefile
+#FROM docker.io/openshift/jenkins-agent-maven-35-centos7:v3.11
+#USER root
+#RUN yum -y install skopeo && yum clean all
+#USER 1001
+#EOF
+#oc start-build ${JENKINS_AGENT} --from-directory=.
