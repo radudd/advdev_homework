@@ -18,6 +18,7 @@ podTemplate(
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
     def mvnCmd = "mvn -s ../nexus_settings.xml"
+    def sonarqubeUrl = "sonarqube-${GUID}-sonarqube.apps.na311.openshift.opentlc.com/"
 
     // Checkout Source Code.
     stage('Checkout Source') {
@@ -59,7 +60,7 @@ podTemplate(
             stage('Code Analysis') {
                   echo "Running Code Analysis"
                   // Execute Sonarqube Tests
-                  sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.apps.fab.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}" 
+                  sh "${mvnCmd} sonar:sonar -Dsonar.host.url=${sonarqubeUrl} -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}" 
             }
         }
       }
