@@ -96,7 +96,7 @@ podTemplate(
         echo "Building OpenShift container image tasks:${devTag}"
         openshift.withCluster() {
             openshift.withProject("${devProject}") {
-                openshift.selector("bc", "${appName}").startBuild("--from-file=target/${appName}.war"))
+                openshift.selector("bc", "${appName}").startBuild("--from-file=target/${appName}.war")
                 // to add condition if builder pod successfully completes
                 openshift.tag("${appName}:latest","${appName}:${devTag}")
             }
