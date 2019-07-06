@@ -77,13 +77,13 @@ podTemplate(
       }
 
       // Create the Build Config, if it doesn't exist
-      stage('Build and Tag OpenShift Image') {
+      stage('Creating BuildConfig') {
         echo "Creating BuildConfig resource for the application"
         // Build Image, tag Image
         openshift.withCluster() {
             openshift.withProject("${devProject}") {
                 if (!openshift.selector('bc', "${appName}").exists()) {
-                    openshift.newBuild("--binary=true --name=${appName}")
+                    openshift.newBuild("--binary=true --name=${appName} jboss-eap71-openshift:1.3")
                 }
             }
         }
