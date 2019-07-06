@@ -40,11 +40,9 @@ podTemplate(
       // Using Maven build the war file
       // Do not run tests in this step
       stage('Build war') {
-        steps {
             echo "Building version ${devTag}"
             // Execute Maven Build
             sh "${mvnCmd} clean package -DskipTests"
-        }
       }
 
       // The next two stages should run in parallel
@@ -52,20 +50,16 @@ podTemplate(
         parallel {
             // Using Maven run the unit tests
             stage('Unit Tests') {
-              steps {
                   echo "Running Unit Tests"
                   // Execute Unit Tests
                   sh "${mvnCmd} test" 
-              }
             }
 
             // Using Maven to call SonarQube for Code Analysis
             stage('Code Analysis') {
-              steps {
                   echo "Running Code Analysis"
                   // Execute Sonarqube Tests
                   sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.apps.fab.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}" 
-              }
             }
         }
       }
