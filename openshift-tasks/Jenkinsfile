@@ -48,7 +48,7 @@ podTemplate(
       }
 
       // The next two stages should run in parallel
-      stage("Run Tests")
+      stage("Run Tests") {
         parallel {
             // Using Maven run the unit tests
             stage('Unit Tests') {
@@ -66,11 +66,9 @@ podTemplate(
                   // Execute Sonarqube Tests
                   sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.apps.fab.example.opentlc.com/ -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}" 
               }
-              }
             }
-
-
         }
+      }
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
         echo "Publish to Nexus"
