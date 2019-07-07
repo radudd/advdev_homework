@@ -1,20 +1,20 @@
 #!groovy
-podTemplate(
-  label: "skopeo-pod",
-  cloud: "openshift",
-  inheritFrom: "maven",
-  podRetention: always(),
-  containers: [
-    containerTemplate(
-      name: "jnlp",
-      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-agent-appdev",
-      resourceRequestMemory: "1Gi",
-      resourceLimitMemory: "2Gi",
-      resourceRequestCpu: "1",
-      resourceLimitCpu: "2"
-    )
-  ]
-) {
+//podTemplate(
+//  label: "skopeo-pod",
+//  cloud: "openshift",
+//  inheritFrom: "maven",
+//  podRetention: always(),
+//  containers: [
+//    containerTemplate(
+//      name: "jnlp",
+//      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-agent-appdev",
+//      resourceRequestMemory: "1Gi",
+//      resourceLimitMemory: "2Gi",
+//      resourceRequestCpu: "1",
+//      resourceLimitCpu: "2"
+//    )
+//  ]
+//) {
   node('skopeo-pod') {
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
@@ -56,21 +56,23 @@ podTemplate(
 
       // The next two stages should run in parallel
       stage('Running tests') {
-          parallel "Unit tests" {
-            echo "Running Unit Tests"
-            // Execute Unit Tests
-            sh "${mvnCmd} test" 
-          },
-          "Running Code analysis Tests" {
-            echo "Running Code Analysis"
-            // Execute Sonarqube Tests
-            sh "${mvnCmd} sonar:sonar -Dsonar.host.url=${sonarqubeUrl} \
-                -Dsonar.projectName=${JOB_BASE_NAME} \
-                -Dsonar.projectVersion=${devTag}" 
-          }
+          parallel (
+            "Unit tests": {
+                echo "Running Unit Tests"
+                // Execute Unit Tests
+                sh "${mvnCmd} test" 
+              },
+            "Code Analysis": {
+                echo "Running Code Analysis"
+                // Execute Sonarqube Tests
+                sh "${mvnCmd} sonar:sonar -Dsonar.host.url=${sonarqubeUrl} \
+                    -Dsonar.projectName=${JOB_BASE_NAME} \
+                    -Dsonar.projectVersion=${devTag}" 
+              }
+          )
       }
       // Using Maven run the unit tests
-      stage('Unit Tests') {
+      /*stage('Unit Tests') {
             echo "Running Unit Tests"
             // Execute Unit Tests
             sh "${mvnCmd} test" 
@@ -81,7 +83,7 @@ podTemplate(
             echo "Running Code Analysis"
             // Execute Sonarqube Tests
             sh "${mvnCmd} sonar:sonar -Dsonar.host.url=${sonarqubeUrl} -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.projectVersion=${devTag}" 
-      }
+      }*/
 
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
