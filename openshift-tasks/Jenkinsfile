@@ -14,7 +14,8 @@
 //      resourceLimitCpu: "2"
 //    )
 //  ]
-//) {
+//) 
+{
   node('skopeo-pod') {
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
