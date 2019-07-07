@@ -198,7 +198,9 @@
         // Execute switch
         openshift.withCluster() {
             openshift.withProject("${prodProject}") {
-                openshift.patch("route/${appName} --patch={\"spec\": {\"to:\": {\"name\": \"${destApp}\"}}}")
+                def prodRoute = openshift.selector("route", "${appName}").object()
+                prodRoute.spec.to.name = "${destApp}"
+                openshift.apply(prodRoute)
             }
         }
       }
