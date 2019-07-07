@@ -100,8 +100,8 @@ podTemplate(
                 def buildVersion = buildConfig.status.lastVersion
                 def build = openshift.selector("build", "${appName}-${buildVersion}").object()
                 echo "Waiting for Build to complete"
-                while (build.status.phase != "Complete") {
-                    if (build.status.phase == "Failed") {
+                while (build.status.phase != "Complete"){
+                    if (build.status.phase == "Failed"){
                         error("Build failed")
                     }
                     sleep 5
