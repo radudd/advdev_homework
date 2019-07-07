@@ -26,7 +26,7 @@ podTemplate(
     //def sonarqubeUrl = "sonarqube-${GUID}-sonarqube.apps.na311.openshift.opentlc.com/"
     def sonarqubeUrl = "http://sonarqube.${GUID}-sonarqube.svc.cluster.local:9000"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
-    def nexusDockerRegistry = "https://nexus-registry-f355-nexus.apps.na311.openshift.opentlc.com"
+    def nexusDockerRegistry = "nexus-registry-f355-nexus.apps.na311.openshift.opentlc.com"
 
     // Checkout Source Code.
     stage('Checkout Source') {
