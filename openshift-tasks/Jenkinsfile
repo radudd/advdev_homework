@@ -104,6 +104,7 @@ podTemplate(
                     if (build.status.phase == "Failed"){
                         error("Build failed")
                     }
+                    echo "Current status: ${build.status.phase}"
                     sleep 5
                 }
                 openshift.tag("${appName}:latest","${appName}:${devTag}")
