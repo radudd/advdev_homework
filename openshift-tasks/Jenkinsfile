@@ -95,7 +95,17 @@ podTemplate(
         openshift.withCluster() {
             openshift.withProject("${devProject}") {
                 openshift.selector("bc", "${appName}").startBuild("--from-file=target/${appName}.war")
-                // to add condition if builder pod successfully completes
+                
+                def buildConfig = openshift.selector("bc","${appName}").object()
+                def buildVersion = buildConfig.status.lastVersion
+                def build = openshift.selector("build", "${appName}-${buildVersion}").object()
+                echo "Waiting for Build to complete"
+                while (build.status.phase != "Complete") {
+                    if (build.status.phase == "Failed") {
+                        error("Build failed")
+                    }
+                    sleep 5
+                }
                 openshift.tag("${appName}:latest","${appName}:${devTag}")
             }
         }
@@ -166,7 +176,7 @@ podTemplate(
                 dcProd.rollout().latest()
 
                 def rcProdVersion = dcProd.object().status.latestVersion
-                def rcProd = openshift.selector("rc","${destApp}-rcProdVersion").object()
+                def rcProd = openshift.selector("rc","${destApp}-${rcProdVersion}").object()
                 echo "Waiting for ${destApp} to be ready"
                 while (rcProd.status.readyReplicas != rcProd.spec.replicas) {
                     sleep 10
@@ -179,6 +189,7 @@ podTemplate(
       }
 
       stage('Switch over to new Version') {
+        input "Switch production?"
         echo "Switching Production application to ${destApp}."
         // Execute switch
         openshift.withCluster() {
