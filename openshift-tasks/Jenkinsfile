@@ -55,6 +55,20 @@ podTemplate(
       }
 
       // The next two stages should run in parallel
+      stage('Running tests') {
+          parallel "Unit tests" {
+            echo "Running Unit Tests"
+            // Execute Unit Tests
+            sh "${mvnCmd} test" 
+          },
+          "Running Code analysis Tests" {
+            echo "Running Code Analysis"
+            // Execute Sonarqube Tests
+            sh "${mvnCmd} sonar:sonar -Dsonar.host.url=${sonarqubeUrl} \
+                -Dsonar.projectName=${JOB_BASE_NAME} \
+                -Dsonar.projectVersion=${devTag}" 
+          }
+      }
       // Using Maven run the unit tests
       stage('Unit Tests') {
             echo "Running Unit Tests"
@@ -123,7 +137,6 @@ podTemplate(
             openshift.withProject("${devProject}") {
                 if (openshift.selector("dc", "${appName}").exists()) {
                     openshift.set("image", "dc/${appName}", "${appName}=${ocpDockerRegistry}/${devProject}/${appName}:${devTag}")
-                    openshift.selector("dc","${appName}").rollout().latest()
                 } else {
                     openshift.newApp("--image-stream=${appName}:${devTag}") 
                 }
@@ -184,10 +197,8 @@ podTemplate(
                     sleep 10
                     rcProd = openshift.selector("rc", "${destApp}-${rcProdVersion}").object()
                 }
-
             }
         }
-
       }
 
       stage('Switch over to new Version') {
