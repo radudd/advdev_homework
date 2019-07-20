@@ -13,10 +13,13 @@ CLUSTER=$3
 echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cluster ${CLUSTER}"
 
 # Set up Jenkins with sufficient resources
-oc new-project ${GUID}-jenkins
+oc project ${GUID}-jenkins || oc new-project ${GUID}-jenkins
 sleep 2
-oc new-app jenkins-persistent
-oc set resources dc jenkins --requests=memory=1Gi,cpu=1 --limits=memory=2Gi,cpu=2
+app_created=$(oc get bc jenkins-persistent)
+if [[ not $app_created  ]] ; then
+    oc new-app jenkins-persistent
+    oc set resources dc jenkins --requests=memory=1Gi,cpu=1 --limits=memory=2Gi,cpu=2
+fi
 
 # Create custom agent container image with skopeo
 agent_deployed=$(oc get build | grep -c "jenkins-agent-appdev.*Complete")
