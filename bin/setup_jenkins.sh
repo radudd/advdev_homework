@@ -15,8 +15,8 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # Set up Jenkins with sufficient resources
 oc project ${GUID}-jenkins || oc new-project ${GUID}-jenkins
 sleep 2
-app_created=$(oc get dc jenkins)
-if [[ not $app_created  ]] ; then
+rt=$(oc get dc jenkins)
+if [[ $rt -ne 0 ]] ; then
     oc new-app jenkins-persistent
     oc set resources dc jenkins --requests=memory=1Gi,cpu=1 --limits=memory=2Gi,cpu=2
 fi
