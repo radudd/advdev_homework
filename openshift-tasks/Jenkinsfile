@@ -145,6 +145,7 @@ podTemplate(
         script {
           def devTasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
           // Check if the returned string contains "tasks-dev"
+          echo "${devTasksRoute}"
           if (devTasksRoute.contains("tasks-dev")) {
             echo "*** tasks-dev validated successfully."
           }
