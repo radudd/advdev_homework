@@ -129,6 +129,7 @@ podTemplate(
             openshift.withProject("${devProject}") {
                 if (openshift.selector("dc", "${appName}-dev").exists()) {
                     openshift.set("image", "dc/${appName}-dev", "${appName}-dev=${ocpDockerRegistry}/${devProject}/${appName}:${devTag}")
+                    openshift.set("env", "dc/${appName}-dev", "VERSION='${devTag} (tasks-dev)'")
                 } else {
                     openshift.newApp("--name=${appName}-dev", "--image-stream=${appName}:${devTag}") 
                     openshift.set("env", "dc/${appName}-dev", "VERSION='${devTag} (tasks-dev)'")
