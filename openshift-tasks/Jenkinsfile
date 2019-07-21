@@ -22,6 +22,7 @@
     def devProject = "${GUID}-tasks-dev"
     def prodProject = "${GUID}-tasks-prod"
     def appName = "tasks"
+    def appDirName = "tasks"
     def nexusUrl = "http://nexus.${GUID}-nexus.svc.cluster.local:8081"
     def sonarqubeUrl = "http://sonarqube.${GUID}-sonarqube.svc.cluster.local:9000"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
@@ -33,7 +34,7 @@
     }
 
     // Build the Tasks Service
-    dir('openshift-tasks') {
+    dir('${appDirName}') {
       // The following variables need to be defined at the top level
       // and not inside the scope of a stage - otherwise they would not
       // be accessible from other stages.
@@ -96,7 +97,7 @@
         echo "Building OpenShift container image tasks:${devTag}"
         openshift.withCluster() {
             openshift.withProject("${devProject}") {
-                openshift.selector("bc", "${appName}").startBuild("--from-file=target/${appName}.war")
+                openshift.selector("bc", "${appName}").startBuild("--from-file=target/${appDirName}.war")
                 
                 def buildConfig = openshift.selector("bc","${appName}").object()
                 def buildVersion = buildConfig.status.lastVersion
