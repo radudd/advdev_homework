@@ -1,21 +1,21 @@
 #!groovy
-//podTemplate(
-//  label: "skopeo-pod",
-//  cloud: "openshift",
-//  inheritFrom: "maven",
-//  podRetention: always(),
-//  containers: [
-//    containerTemplate(
-//      name: "jnlp",
-//      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-agent-appdev",
-//      resourceRequestMemory: "1Gi",
-//      resourceLimitMemory: "2Gi",
-//      resourceRequestCpu: "1",
-//      resourceLimitCpu: "2"
-//    )
-//  ]
-//) {
-  node('skopeo-pod') {
+podTemplate(
+  label: "skopeo-pod",
+  cloud: "openshift",
+  inheritFrom: "maven",
+  podRetention: always(),
+  containers: [
+    containerTemplate(
+      name: "jnlp",
+      image: "docker-registry.default.svc:5000/${GUID}-jenkins/jenkins-agent-appdev",
+      resourceRequestMemory: "1Gi",
+      resourceLimitMemory: "2Gi",
+      resourceRequestCpu: "1",
+      resourceLimitCpu: "2"
+    )
+  ]
+) {
+//  node('skopeo-pod') {
     // Define Maven Command to point to the correct
     // settings for our Nexus installation
     def mvnCmd = "mvn -s ../nexus_settings.xml"
@@ -23,10 +23,13 @@
     def prodProject = "${GUID}-tasks-prod"
     def appName = "tasks"
     def appDirName = "openshift-tasks"
-    def nexusUrl = "http://nexus.${GUID}-nexus.svc.cluster.local:8081"
-    def sonarqubeUrl = "http://sonarqube.${GUID}-sonarqube.svc.cluster.local:9000"
+    //def nexusUrl = "http://nexus.${GUID}-nexus.svc.cluster.local:8081"
+    //def sonarqubeUrl = "http://sonarqube.${GUID}-sonarqube.svc.cluster.local:9000"
+    //def nexusDockerRegistry = "nexus-registry-${GUID}-nexus.apps.na311.openshift.opentlc.com"
+    def nexusUrl = "https://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/all-maven-public"
+    def sonarqubeUrl = "sonarqube.gpte-hw-cicd.svc.cluster.local:9000"
+    def nexusDockerRegistry = "https://nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
-    def nexusDockerRegistry = "nexus-registry-f355-nexus.apps.na311.openshift.opentlc.com"
 
     // Checkout Source Code.
     stage('Checkout Source') {
@@ -206,7 +209,6 @@
       }
     }
   }
-//}
 
 // Convenience Functions to read version from the pom.xml
 // Do not change anything below this line.
