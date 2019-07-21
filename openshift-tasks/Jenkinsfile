@@ -26,7 +26,7 @@ podTemplate(
     //def nexusUrl = "http://nexus.${GUID}-nexus.svc.cluster.local:8081"
     //def sonarqubeUrl = "http://sonarqube.${GUID}-sonarqube.svc.cluster.local:9000"
     //def nexusDockerRegistry = "nexus-registry-${GUID}-nexus.apps.na311.openshift.opentlc.com"
-    def nexusUrl = "https://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/all-maven-public"
+    def nexusUrl = "http://nexus3.gpte-hw-cicd.svc.cluster.local:8081"
     def sonarqubeUrl = "http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def nexusDockerRegistry = "https://nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
