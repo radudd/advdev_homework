@@ -131,6 +131,7 @@ podTemplate(
                     openshift.set("image", "dc/${appName}-dev", "${appName}-dev=${ocpDockerRegistry}/${devProject}/${appName}:${devTag}")
                 } else {
                     openshift.newApp("--name=${appName}-dev", "--image-stream=${appName}:${devTag}") 
+                    openshift.set("env", "dc/${appName}-dev", "VERSION='${devTag} (tasks-dev)'")
                     openshift.set("triggers", "dc/${appName}-dev", "--remove-all")
                     openshift.expose("svc", "${appName}-dev")
                 }
@@ -169,6 +170,10 @@ podTemplate(
         //      Make sure the application is running and ready before proceeding
         openshift.withCluster() {
             openshift.withProject("${prodProject}") {
+
+                openshift.set("env", "dc/${appName}-blue", "VERSION='${prodTag} (tasks-blue)'")
+                openshift.set("env", "dc/${appName}-green", "VERSION='${prodTag} (tasks-green)'")
+
                 activeApp = openshift.selector("route", "${appName}").object().spec.to.name
                 if (activeApp == "${appName}-green") {
                     destApp = "${appName}-blue"
