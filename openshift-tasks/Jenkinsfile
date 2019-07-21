@@ -59,6 +59,7 @@ podTemplate(
       }
 
       // The next two stages should run in parallel
+      /*
       stage('Running tests') {
           parallel (
             "Unit tests": {
@@ -75,6 +76,7 @@ podTemplate(
               }
           )
       }
+      */
 
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
