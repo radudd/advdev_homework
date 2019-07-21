@@ -30,6 +30,7 @@ podTemplate(
     def sonarqubeUrl = "http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def nexusDockerRegistry = "nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
+    def CLUSTER=".na311.openshift.opentlc.com"
 
     // Checkout Source Code.
     stage('Checkout Source') {
@@ -127,16 +128,27 @@ podTemplate(
         //      Make sure the application is running and ready before proceeding
         openshift.withCluster() {
             openshift.withProject("${devProject}") {
-                if (openshift.selector("dc", "${appName}-dev").exists()) {
-                    openshift.set("image", "dc/${appName}-dev", "${appName}-dev=${ocpDockerRegistry}/${devProject}/${appName}:${devTag}")
-                    openshift.set("env", "dc/${appName}-dev", "VERSION='${devTag} (tasks-dev)'")
+                if (openshift.selector("dc", "${appName}").exists()) {
+                    openshift.set("image", "dc/${appName}", "${appName}=${ocpDockerRegistry}/${devProject}/${appName}:${devTag}")
+                    openshift.set("env", "dc/${appName}", "VERSION='${devTag} (tasks-dev)'")
                 } else {
-                    openshift.newApp("--name=${appName}-dev", "--image-stream=${appName}:${devTag}") 
-                    openshift.set("env", "dc/${appName}-dev", "VERSION='${devTag} (tasks-dev)'")
-                    openshift.set("triggers", "dc/${appName}-dev", "--remove-all")
-                    openshift.expose("svc", "${appName}-dev")
+                    openshift.newApp("--name=${appName}", "--image-stream=${appName}:${devTag}") 
+                    openshift.set("env", "dc/${appName}", "VERSION='${devTag} (tasks-dev)'")
+                    openshift.set("triggers", "dc/${appName}", "--remove-all")
+                    openshift.expose("svc", "${appName}")
                 }
             }
+        }
+        echo "Testing Tasks Dev Application"
+        script {
+          def devTasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
+          // Check if the returned string contains "tasks-dev"
+          if (devTasksRoute.contains("tasks-dev")) {
+            echo "*** tasks-dev validated successfully."
+          }
+          else {
+            error("*** tasks-dev returned unexpected name.")
+          }
         }
       }
 
