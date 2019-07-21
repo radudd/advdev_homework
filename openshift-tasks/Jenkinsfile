@@ -28,7 +28,7 @@ podTemplate(
     //def nexusDockerRegistry = "nexus-registry-${GUID}-nexus.apps.na311.openshift.opentlc.com"
     def nexusUrl = "http://nexus3.gpte-hw-cicd.svc.cluster.local:8081"
     def sonarqubeUrl = "http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
-    def nexusDockerRegistry = "https://nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
+    def nexusDockerRegistry = "nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
 
     // Checkout Source Code.
