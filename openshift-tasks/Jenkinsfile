@@ -30,7 +30,7 @@ podTemplate(
     def sonarqubeUrl = "http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def nexusDockerRegistry = "nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
-    def CLUSTER=".na311.openshift.opentlc.com"
+    def CLUSTER="na311.openshift.opentlc.com"
 
     // Checkout Source Code.
     stage('Checkout Source') {
