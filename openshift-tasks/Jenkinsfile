@@ -59,7 +59,7 @@ podTemplate(
       }
 
       // The next two stages should run in parallel
-      /*
+      
       stage('Running tests') {
           parallel (
             "Unit tests": {
@@ -76,7 +76,7 @@ podTemplate(
               }
           )
       }
-      */
+      
 
       // Publish the built war file to Nexus
       stage('Publish to Nexus') {
@@ -144,8 +144,6 @@ podTemplate(
         echo "Testing Tasks Dev Application"
         script {
           def devTasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
-          // Check if the returned string contains "tasks-dev"
-          echo "${devTasksRoute}"
           if (devTasksRoute.contains("tasks-dev")) {
             echo "*** tasks-dev validated successfully."
           }
