@@ -142,8 +142,7 @@ podTemplate(
                     rcDev = openshift.selector("rc", "${appName}-${rcDevVersion}").object()
                 }
 
-                openshift.expose("svc", "${appName}")
-
+                sleep 10
                 echo "Testing Tasks Dev Application"
                 script {
                   def devTasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
