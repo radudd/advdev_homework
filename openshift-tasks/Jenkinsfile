@@ -21,7 +21,7 @@
     def mvnCmd = "mvn -s ../nexus_settings.xml"
     def devProject = "${GUID}-tasks-dev"
     def prodProject = "${GUID}-tasks-prod"
-    def appName = "openshift-tasks"
+    def appName = "tasks"
     def nexusUrl = "http://nexus.${GUID}-nexus.svc.cluster.local:8081"
     def sonarqubeUrl = "http://sonarqube.${GUID}-sonarqube.svc.cluster.local:9000"
     def ocpDockerRegistry = "docker-registry.default.svc:5000"
