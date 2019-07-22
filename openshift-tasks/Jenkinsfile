@@ -138,10 +138,12 @@ podTemplate(
                 def rcDev = openshift.selector("rc","${appName}-${rcDevVersion}").object()
                 echo "Waiting for DEV app to be ready"
                 while (rcDev.status.readyReplicas != rcDev.spec.replicas) {
-                    sleep 30
+                    sleep 10
                     rcDev = openshift.selector("rc", "${appName}-${rcDevVersion}").object()
                 }
 
+                // Java app will take a while to startup
+                sleep 60
           }
         }
       }
@@ -195,7 +197,6 @@ podTemplate(
 
                 def dcProd = openshift.selector("dc","${destApp}")
                 dcProd.rollout().latest()
-                sleep 30
 
                 def rcProdVersion = dcProd.object().status.latestVersion
                 def rcProd = openshift.selector("rc","${destApp}-${rcProdVersion}").object()
@@ -204,6 +205,9 @@ podTemplate(
                     sleep 10
                     rcProd = openshift.selector("rc", "${destApp}-${rcProdVersion}").object()
                 }
+
+                // Java app will take a while to startup
+                sleep 60
             }
         }
       }
