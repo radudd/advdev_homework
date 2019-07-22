@@ -141,6 +141,7 @@ podTemplate(
                     sleep 10
                     rcDev = openshift.selector("rc", "${appName}-${rcDevVersion}").object()
                 }
+                sleep 30
 
           }
         }
@@ -201,6 +202,7 @@ podTemplate(
                     sleep 10
                     rcProd = openshift.selector("rc", "${destApp}-${rcProdVersion}").object()
                 }
+                sleep 30
             }
         }
       }
