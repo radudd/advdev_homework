@@ -47,5 +47,6 @@ oc get bc tasks-pipeline 2>/dev/null
 rt=$?
 if [[ $rt -ne 0 ]]; then 
   oc new-build $REPO --name=tasks-pipeline --context-dir=openshift-tasks --strategy=pipeline --env=GUID=${GUID} --env=REPO=${REPO} --env=CLUSTER=${CLUSTER}
+  oc set triggers bc/tasks-pipeline --remove-all -n ${GUID}-jenkins
 fi
 
