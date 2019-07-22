@@ -177,15 +177,13 @@ podTemplate(
         //      Make sure the application is running and ready before proceeding
         openshift.withCluster() {
             openshift.withProject("${prodProject}") {
-
-                openshift.set("env", "dc/${appName}-blue", "VERSION='${prodTag} (tasks-blue)'")
-                openshift.set("env", "dc/${appName}-green", "VERSION='${prodTag} (tasks-green)'")
-
                 activeApp = openshift.selector("route", "${appName}").object().spec.to.name
                 if (activeApp == "${appName}-green") {
                     destApp = "${appName}-blue"
+                    openshift.set("env", "dc/${appName}-blue", "VERSION='${prodTag} (tasks-blue)'")
                 } else {
                     destApp = "${appName}-green"
+                    openshift.set("env", "dc/${appName}-green", "VERSION='${prodTag} (tasks-green)'")
                 }
 
                 echo "Active app: " + activeApp
@@ -208,7 +206,6 @@ podTemplate(
       }
 
       stage('Switch over to new Version') {
-        // input "Switch production?"
         echo "Switching Production application to ${destApp}."
         // Execute switch
         openshift.withCluster() {
