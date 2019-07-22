@@ -207,7 +207,7 @@ podTemplate(
                 }
 
                 // Java app will take a while to startup
-                sleep 60
+                sleep 120
             }
         }
       }
