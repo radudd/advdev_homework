@@ -138,21 +138,10 @@ podTemplate(
                 def rcDev = openshift.selector("rc","${appName}-${rcDevVersion}").object()
                 echo "Waiting for DEV app to be ready"
                 while (rcDev.status.readyReplicas != rcDev.spec.replicas) {
-                    sleep 10
+                    sleep 30
                     rcDev = openshift.selector("rc", "${appName}-${rcDevVersion}").object()
                 }
 
-                sleep 10
-                echo "Testing Tasks Dev Application"
-                script {
-                  def devTasksRoute = sh(returnStdout: true, script: "curl tasks-${GUID}-tasks-dev.apps.${CLUSTER}").trim()
-                  if (devTasksRoute.contains("tasks-dev")) {
-                    echo "*** tasks-dev validated successfully."
-                  }
-                  else {
-                    error("*** tasks-dev returned unexpected name.")
-                  }
-                }
           }
         }
       }
@@ -206,6 +195,7 @@ podTemplate(
 
                 def dcProd = openshift.selector("dc","${destApp}")
                 dcProd.rollout().latest()
+                sleep 30
 
                 def rcProdVersion = dcProd.object().status.latestVersion
                 def rcProd = openshift.selector("rc","${destApp}-${rcProdVersion}").object()
