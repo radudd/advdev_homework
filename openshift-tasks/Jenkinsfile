@@ -142,8 +142,6 @@ podTemplate(
                     rcDev = openshift.selector("rc", "${appName}-${rcDevVersion}").object()
                 }
 
-                // Java app will take a while to startup
-                sleep 60
           }
         }
       }
@@ -205,9 +203,6 @@ podTemplate(
                     sleep 10
                     rcProd = openshift.selector("rc", "${destApp}-${rcProdVersion}").object()
                 }
-
-                // Java app will take a while to startup
-                sleep 120
             }
         }
       }
