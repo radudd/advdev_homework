@@ -85,19 +85,6 @@ podTemplate(
         sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::${nexusUrl}/repository/releases"
       }
 
-      // Create the Build Config, if it doesn't exist
-      stage('Creating BuildConfig') {
-        // Build Image, tag Image
-        openshift.withCluster() {
-            openshift.withProject("${devProject}") {
-                if (!openshift.selector('bc', "${appName}").exists()) {
-                    echo "Creating BuildConfig resource for the application"
-                    openshift.newBuild("--binary=true --name=${appName} jboss-eap71-openshift:1.3")
-                }
-            }
-        }
-      }
-
       // Build the OpenShift Image in OpenShift and tag it.
       stage('Build and Tag OpenShift Image') {
         echo "Building OpenShift container image tasks:${devTag}"
